@@ -4,9 +4,8 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // Set base for GitHub Pages deployment
-  // Change to '/' if using a custom domain like elliottelford.com
-  base: process.env.GITHUB_PAGES ? '/Mercury/' : '/',
+  // Base path for GitHub Pages - must match your repo name
+  base: '/Mercury/',
   build: {
     // Optimize chunk size
     rollupOptions: {

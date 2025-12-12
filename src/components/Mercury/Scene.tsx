@@ -4,12 +4,16 @@ import { OrbitControls, Stars, PerspectiveCamera } from '@react-three/drei'
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing'
 import { BlendFunction } from 'postprocessing'
 import { Mercury } from './Mercury'
-import { SunLight } from './SunLight'
+import { Sun } from '../Sun/Sun'
+import { SolarWindParticles } from '../SolarWind/SolarWindParticles'
+import { Magnetosphere } from '../Magnetosphere/Magnetosphere'
 import { LoadingScreen } from '../UI/LoadingScreen'
 import { useMercuryStore } from '../../store/mercuryStore'
+import { useSimulationStore } from '../../store/simulationStore'
 
 function SceneContent() {
   const { cameraDistance } = useMercuryStore()
+  const { showSun } = useSimulationStore()
 
   return (
     <>
@@ -24,9 +28,9 @@ function SceneContent() {
 
       {/* Controls */}
       <OrbitControls
-        enablePan={false}
+        enablePan={true}
         minDistance={1.5}
-        maxDistance={10}
+        maxDistance={100}
         enableDamping
         dampingFactor={0.05}
         rotateSpeed={0.5}
@@ -34,7 +38,6 @@ function SceneContent() {
       />
 
       {/* Lighting */}
-      <SunLight />
       <ambientLight intensity={0.05} />
 
       {/* Environment */}
@@ -48,18 +51,37 @@ function SceneContent() {
         speed={0.5}
       />
 
-      {/* Mercury */}
+      {/* Sun with corona and activity */}
+      {showSun && (
+        <Suspense fallback={null}>
+          <Sun />
+        </Suspense>
+      )}
+
+      {/* Solar Wind Particles */}
       <Suspense fallback={null}>
-        <Mercury />
+        <SolarWindParticles />
       </Suspense>
+
+      {/* Mercury with magnetosphere */}
+      <group position={[0, 0, 0]}>
+        <Suspense fallback={null}>
+          <Mercury />
+        </Suspense>
+
+        {/* Mercury Magnetosphere */}
+        <Suspense fallback={null}>
+          <Magnetosphere />
+        </Suspense>
+      </group>
 
       {/* Post-processing effects */}
       <EffectComposer>
         <Bloom
-          intensity={0.5}
-          luminanceThreshold={0.9}
+          intensity={0.8}
+          luminanceThreshold={0.7}
           luminanceSmoothing={0.9}
-          radius={0.8}
+          radius={1.0}
         />
         <ChromaticAberration
           blendFunction={BlendFunction.NORMAL}

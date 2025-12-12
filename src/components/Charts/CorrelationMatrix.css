@@ -1,0 +1,112 @@
+.correlation-matrix {
+  background: rgba(20, 30, 60, 0.6);
+  border: 1px solid rgba(100, 150, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.matrix-title,
+.analysis-title {
+  margin: 0 0 15px 0;
+  font-size: 14px;
+  color: #88aaff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Courier New', monospace;
+}
+
+.matrix-grid {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 15px;
+}
+
+.matrix-cell {
+  padding: 8px;
+  text-align: center;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+  border: 1px solid rgba(100, 150, 255, 0.1);
+  border-radius: 3px;
+}
+
+.header-cell {
+  background: rgba(50, 70, 120, 0.5);
+  color: #88aaff;
+  font-weight: bold;
+  font-size: 10px;
+}
+
+.data-cell {
+  color: #fff;
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.data-cell:hover {
+  transform: scale(1.1);
+  z-index: 10;
+  box-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
+}
+
+.matrix-legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 11px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Frequency Analysis */
+.frequency-analysis {
+  background: rgba(20, 30, 60, 0.6);
+  border: 1px solid rgba(100, 150, 255, 0.2);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.frequency-bars {
+  display: flex;
+  align-items: flex-end;
+  height: 150px;
+  gap: 2px;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.freq-bar {
+  flex: 1;
+  min-width: 2px;
+  background: #00ff88;
+  transition: all 0.3s ease;
+  cursor: help;
+}
+
+.freq-bar:hover {
+  opacity: 0.7;
+  transform: scaleY(1.1);
+}
+
+.frequency-axis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #888;
+  font-family: 'Courier New', monospace;
+}

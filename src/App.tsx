@@ -1,14 +1,16 @@
 import { Scene } from './components/Mercury/Scene'
-import { InfoPanel } from './components/UI/InfoPanel'
-import { Controls } from './components/UI/Controls'
+import { SWPCDashboard } from './components/Dashboard/SWPCDashboard'
+import { AnalysisPanel } from './components/Dashboard/AnalysisPanel'
+import { AdvancedControls } from './components/UI/AdvancedControls'
 import './App.css'
 
 function App() {
   return (
     <>
       <Scene />
-      <InfoPanel />
-      <Controls />
+      <SWPCDashboard />
+      <AnalysisPanel />
+      <AdvancedControls />
     </>
   )
 }

@@ -18,6 +18,14 @@
 
     <title>Mercury Simulation - Solar Wind & Space Weather Analysis | elliottelford.com</title>
 
+    <!-- Open Graph / Social Media -->
+    <meta property="og:image" content="https://etelford32.github.io/Mercury/preview.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Mercury Simulation - Solar Wind & Space Weather" />
+    <meta name="twitter:description" content="Real-time space weather visualization with ML predictions and scientific analysis." />
+
     <style>
       /* Preload styles to prevent flash */
       html, body {
@@ -25,11 +33,263 @@
         padding: 0;
         background: #000;
         overflow: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+      }
+
+      /* Landing page styles */
+      .landing-page {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(135deg, #000008 0%, #001122 50%, #000530 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        color: #fff;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+        animation: fadeIn 0.8s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .landing-page.hidden {
+        animation: fadeOut 0.5s ease-out forwards;
+      }
+
+      @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; pointer-events: none; }
+      }
+
+      .hero-title {
+        font-size: 4rem;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+        background: linear-gradient(135deg, #00ffff, #ff6b1a, #fdb813);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: pulse 3s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.9; }
+        50% { opacity: 1; }
+      }
+
+      .hero-subtitle {
+        font-size: 1.5rem;
+        color: #88aaff;
+        margin: 0 0 30px 0;
+        max-width: 800px;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        max-width: 1000px;
+        margin: 30px 0;
+      }
+
+      .feature-card {
+        background: rgba(20, 30, 60, 0.8);
+        border: 1px solid rgba(100, 150, 255, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover {
+        border-color: rgba(100, 150, 255, 0.6);
+        box-shadow: 0 0 20px rgba(100, 150, 255, 0.3);
+        transform: translateY(-5px);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .feature-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #00ffff;
+        margin: 10px 0;
+      }
+
+      .feature-desc {
+        font-size: 0.9rem;
+        color: #aaa;
+        line-height: 1.5;
+      }
+
+      .cta-button {
+        margin-top: 40px;
+        padding: 18px 50px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, #00ffff, #0088ff);
+        border: none;
+        border-radius: 50px;
+        color: #000;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 30px rgba(0, 255, 255, 0.3);
+        animation: glow 2s ease-in-out infinite;
+      }
+
+      @keyframes glow {
+        0%, 100% { box-shadow: 0 5px 30px rgba(0, 255, 255, 0.3); }
+        50% { box-shadow: 0 5px 40px rgba(0, 255, 255, 0.6); }
+      }
+
+      .cta-button:hover {
+        transform: scale(1.05);
+        box-shadow: 0 5px 50px rgba(0, 255, 255, 0.6);
+      }
+
+      .tech-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 30px;
+      }
+
+      .tech-badge {
+        background: rgba(100, 150, 255, 0.2);
+        border: 1px solid rgba(100, 150, 255, 0.4);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: #88aaff;
+        font-family: 'Courier New', monospace;
+      }
+
+      .credits {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .credits a {
+        color: #00ffff;
+        text-decoration: none;
+      }
+
+      .credits a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+          font-size: 1.2rem;
+        }
+
+        .features-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .cta-button {
+          padding: 15px 40px;
+          font-size: 1.1rem;
+        }
       }
     </style>
   </head>
   <body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="landing-page">
+      <h1 class="hero-title">☿ Mercury Simulation</h1>
+      <p class="hero-subtitle">
+        Advanced Solar Wind & Space Weather Analysis Platform
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🌞</div>
+          <div class="feature-title">Real-time SWPC Data</div>
+          <div class="feature-desc">
+            Live solar wind, magnetic field, X-ray flux, and geomagnetic data from NOAA
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-title">Machine Learning</div>
+          <div class="feature-desc">
+            TensorFlow.js LSTM predictions for solar wind speed and flare probability
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Scientific Analysis</div>
+          <div class="feature-desc">
+            FFT, wavelets, statistics, correlation matrices, and time series analysis
+          </div>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎮</div>
+          <div class="feature-title">3D Visualization</div>
+          <div class="feature-desc">
+            Interactive Sun, 50k particle solar wind, and Mercury's magnetosphere
+          </div>
+        </div>
+      </div>
+
+      <div class="tech-badges">
+        <span class="tech-badge">React + Three.js</span>
+        <span class="tech-badge">TensorFlow.js</span>
+        <span class="tech-badge">NOAA SWPC API</span>
+        <span class="tech-badge">WebGL</span>
+        <span class="tech-badge">TypeScript</span>
+      </div>
+
+      <button id="enter-simulation" class="cta-button">
+        🚀 Launch Simulation
+      </button>
+
+      <div class="credits">
+        Created by <a href="https://elliottelford.com" target="_blank">Elliot Telford</a>
+      </div>
+    </div>
+
+    <!-- Main App Container -->
     <div id="root"></div>
+
+    <script type="module">
+      // Landing page interaction
+      const landingPage = document.getElementById('landing-page');
+      const enterButton = document.getElementById('enter-simulation');
+
+      enterButton.addEventListener('click', () => {
+        landingPage.classList.add('hidden');
+        setTimeout(() => {
+          landingPage.style.display = 'none';
+        }, 500);
+      });
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

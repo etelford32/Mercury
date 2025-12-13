@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ['main', 'claude/mercury-solar-simulation-01W8gWG8o8KnxfzfA3XLXSqr']
+    branches: ['main']
   workflow_dispatch:
 
 permissions:

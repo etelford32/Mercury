@@ -197,11 +197,11 @@ export class StatisticalAnalyzer {
     const percentile25 = sorted[Math.floor(n * 0.25)];
     const percentile75 = sorted[Math.floor(n * 0.75)];
 
-    // Skewness
-    const skewness = data.reduce((sum, val) => sum + Math.pow((val - mean) / stdDev, 3), 0) / n;
+    // Skewness (0 if no variance)
+    const skewness = stdDev === 0 ? 0 : data.reduce((sum, val) => sum + Math.pow((val - mean) / stdDev, 3), 0) / n;
 
-    // Kurtosis
-    const kurtosis = data.reduce((sum, val) => sum + Math.pow((val - mean) / stdDev, 4), 0) / n - 3;
+    // Kurtosis (0 if no variance)
+    const kurtosis = stdDev === 0 ? 0 : data.reduce((sum, val) => sum + Math.pow((val - mean) / stdDev, 4), 0) / n - 3;
 
     return {
       mean,
@@ -266,7 +266,9 @@ export class StatisticalAnalyzer {
       denomY += diffY * diffY;
     }
 
-    return numerator / Math.sqrt(denomX * denomY);
+    const denominator = Math.sqrt(denomX * denomY);
+    if (denominator === 0) return 0; // No variance in data
+    return numerator / denominator;
   }
 
   /**
@@ -297,7 +299,8 @@ export class StatisticalAnalyzer {
     const sumXY = x.reduce((sum, val, idx) => sum + val * y[idx], 0);
     const sumXX = x.reduce((sum, val) => sum + val * val, 0);
 
-    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+    const denominator = n * sumXX - sumX * sumX;
+    const slope = denominator === 0 ? 0 : (n * sumXY - sumX * sumY) / denominator;
     const intercept = (sumY - slope * sumX) / n;
 
     // R-squared
@@ -307,7 +310,7 @@ export class StatisticalAnalyzer {
       const predicted = slope * x[idx] + intercept;
       return sum + Math.pow(val - predicted, 2);
     }, 0);
-    const r2 = 1 - ssResidual / ssTotal;
+    const r2 = ssTotal === 0 ? 1 : 1 - ssResidual / ssTotal;
 
     return { slope, intercept, r2 };
   }
@@ -337,6 +340,11 @@ export class StatisticalAnalyzer {
   static autocorrelation(data: number[], maxLag: number = 50): number[] {
     const mean = data.reduce((sum, val) => sum + val, 0) / data.length;
     const variance = data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0);
+
+    if (variance === 0) {
+      // No variance, return array of 1s (perfect correlation with self)
+      return Array(maxLag + 1).fill(1);
+    }
 
     const acf: number[] = [];
 
@@ -438,6 +446,11 @@ export class SignalProcessor {
     const max = Math.max(...signal);
     const range = max - min;
 
+    if (range === 0) {
+      // All values are the same, return 0.5 (middle of 0-1 range)
+      return signal.map(() => 0.5);
+    }
+
     return signal.map(val => (val - min) / range);
   }
 
@@ -449,6 +462,11 @@ export class SignalProcessor {
     const stdDev = Math.sqrt(
       signal.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / signal.length
     );
+
+    if (stdDev === 0) {
+      // No variance, return zeros
+      return signal.map(() => 0);
+    }
 
     return signal.map(val => (val - mean) / stdDev);
   }
@@ -499,10 +517,12 @@ export class TimeSeriesAnalyzer {
         }, 0) / (2 * windowSize)
       );
 
-      const zScore = Math.abs(meanAfter - meanBefore) / stdDev;
+      if (stdDev > 0) {
+        const zScore = Math.abs(meanAfter - meanBefore) / stdDev;
 
-      if (zScore > threshold) {
-        changePoints.push(i);
+        if (zScore > threshold) {
+          changePoints.push(i);
+        }
       }
     }
 
@@ -516,7 +536,8 @@ export class TimeSeriesAnalyzer {
     const roc: number[] = [];
 
     for (let i = period; i < data.length; i++) {
-      const change = (data[i] - data[i - period]) / data[i - period] * 100;
+      const prevValue = data[i - period];
+      const change = prevValue === 0 ? 0 : (data[i] - prevValue) / prevValue * 100;
       roc.push(change);
     }
 

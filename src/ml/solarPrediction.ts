@@ -82,7 +82,10 @@ export class SolarActivityPredictor {
     const max = Math.max(...data);
     const range = max - min;
 
-    const normalized = data.map(val => (val - min) / range);
+    // Handle case where all values are the same
+    const normalized = range === 0
+      ? data.map(() => 0.5)
+      : data.map(val => (val - min) / range);
 
     return { normalized, min, max };
   }
@@ -176,6 +179,16 @@ export class SolarActivityPredictor {
   }> {
     // Simple heuristic-based prediction
     const recentFlux = xrayData.slice(-12).map(d => d.longWavelength);
+
+    // Handle empty data case
+    if (recentFlux.length === 0) {
+      return {
+        probability: 0.05,
+        expectedClass: 'C',
+        timeframe: '24 hours',
+      };
+    }
+
     const avgFlux = recentFlux.reduce((a, b) => a + b, 0) / recentFlux.length;
     const trend = this.calculateTrend(recentFlux);
 
@@ -203,10 +216,15 @@ export class SolarActivityPredictor {
    * Anomaly detection using Isolation Forest approach
    */
   detectAnomalies(data: number[], threshold: number = 2): number[] {
+    if (data.length === 0) return [];
+
     const mean = data.reduce((a, b) => a + b, 0) / data.length;
     const stdDev = Math.sqrt(
       data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / data.length
     );
+
+    // If no variance, no anomalies can be detected
+    if (stdDev === 0) return [];
 
     return data.map((val, idx) => {
       const zScore = Math.abs((val - mean) / stdDev);
@@ -257,7 +275,9 @@ export class SolarActivityPredictor {
       denomB += diffB * diffB;
     }
 
-    return numerator / Math.sqrt(denomA * denomB);
+    const denominator = Math.sqrt(denomA * denomB);
+    if (denominator === 0) return 0; // No variance in data
+    return numerator / denominator;
   }
 
   /**
@@ -273,6 +293,8 @@ export class SolarActivityPredictor {
    */
   private calculateTrend(data: number[]): number {
     const n = data.length;
+    if (n === 0) return 0;
+
     let sumX = 0;
     let sumY = 0;
     let sumXY = 0;
@@ -285,8 +307,14 @@ export class SolarActivityPredictor {
       sumXX += i * i;
     }
 
-    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
-    return slope / (sumY / n); // Normalized slope
+    const denominator = n * sumXX - sumX * sumX;
+    if (denominator === 0) return 0;
+
+    const slope = (n * sumXY - sumX * sumY) / denominator;
+    const avgY = sumY / n;
+    if (avgY === 0) return 0;
+
+    return slope / avgY; // Normalized slope
   }
 
   /**
